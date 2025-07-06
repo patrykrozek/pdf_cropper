@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import fitz  # PyMuPDF
+import fitz
 import base64
 import io
 
@@ -17,25 +17,15 @@ def crop_to_a6():
         return jsonify({"error": "No PDF data provided."}), 400
 
     try:
-        # Dekoduj PDF z base64
         pdf_bytes = base64.b64decode(pdf_b64)
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
 
-        # Ustaw celowy rozmiar: 100mm x 150mm = ~283pt x 425pt
+        # Wymiar etykiety: 100 mm x 150 mm = 283 x 425 pt
         label_width = 283
         label_height = 425
 
         for page in doc:
-            width = page.rect.width
-            height = page.rect.height
-
-            # Wyśrodkowanie cropboxa
-            left = (width - label_width) / 2
-            top = (height - label_height) / 2
-            right = left + label_width
-            bottom = top + label_height
-
-            cropbox = fitz.Rect(left, top, right, bottom)
+            cropbox = fitz.Rect(0, 0, label_width, label_height)
             page.set_cropbox(cropbox)
 
         output = io.BytesIO()
@@ -47,4 +37,3 @@ def crop_to_a6():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
