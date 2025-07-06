@@ -26,7 +26,9 @@ def crop_to_a6():
         for page in doc:
             width = page.rect.width
             height = page.rect.height
-            cropbox = fitz.Rect(width - a6_width, height - a6_height, width, height)
+            # Przycinanie od LEWEJ GÓRNEJ strony
+            cropbox = fitz.Rect(0, 0, a6_width, a6_height)
+
             page.set_cropbox(cropbox)
 
         output = io.BytesIO()
