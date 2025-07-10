@@ -24,8 +24,17 @@ def crop_to_a6():
         label_width = 283
         label_height = 425
 
+        # Marginesy
+        offset_x = 15  # przesunięcie od lewej
+        offset_y = 25  # przesunięcie od góry
+
         for page in doc:
-            cropbox = fitz.Rect(0, 0, label_width, label_height)
+            cropbox = fitz.Rect(
+                offset_x,
+                offset_y,
+                offset_x + label_width,
+                offset_y + label_height    
+            )
             page.set_cropbox(cropbox)
 
         output = io.BytesIO()
